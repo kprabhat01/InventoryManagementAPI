@@ -3,3 +3,19 @@
 ################################################################################
 
 /IL.Database.Core/bin/Debug
+/IL.Database.Core/obj/Debug
+/IL.DTO.Core/bin/Debug
+/IL.DTO.Core/obj/Debug
+/IL.Service.Core/bin/Debug
+/IL.Service.Core/obj/Debug
+/IL.Util.Core/bin/Debug
+/IL.Util.Core/obj/Debug
+/IM.Data.Core/bin/Debug
+/IM.Data.Core/obj/Debug
+/Inventory/bin
+/Inventory/obj/Debug
+/Inventory/packages/EntityFramework.6.2.0/Content/net40
+/Inventory/packages/EntityFramework.6.2.0/lib
+/Inventory/packages/EntityFramework.6.2.0
+/Inventory/packages
+/Inventory/.vs
