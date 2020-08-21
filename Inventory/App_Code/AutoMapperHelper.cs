@@ -12,7 +12,7 @@ namespace Inventory.App_Code
         {
             CreateMap<UserDTO, User>();
             CreateMap<User, UserResponseDTO>();
-            CreateMap<outlet, CommonDTO>();
+            CreateMap<outlet, CommonOutletDTO>();
             CreateMap<UserRole, CommonDTO>().ForMember(src => src.NormalizeName, a => a.MapFrom(des => des.name));
             CreateMap<movementType, CommonDTO>();
             CreateMap<unit, CommonDTO>();

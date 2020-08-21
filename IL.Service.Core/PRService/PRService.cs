@@ -39,6 +39,7 @@ namespace IL.Service.Core.PRService
                         InsertPrStatus(prObj.id, prObj.statusId, prObj.createdBy, entites);
                         // SavePRItemLogs(prObj.id, null, itemObj, prObj.createdBy);
                         transaction.Commit();
+                        entites.UPDATEMATERIALRATEFORPO(prObj.toOutletId, prObj.id);
                         return true;
                     }
                     catch (Exception ex)

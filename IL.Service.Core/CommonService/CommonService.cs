@@ -23,9 +23,9 @@ namespace IL.Service.Core.CommonService
             _mapper = mapper;
             _logger = logger;
         }
-        public List<DTO.Core.CommonDTO.CommonDTO> GetOutlets()
+        public List<DTO.Core.CommonDTO.CommonOutletDTO> GetOutlets()
         {
-            return this._dbEntities.outlets.Where(p => p.deleteflag == false).AsEnumerable().Select(opt => this._mapper.Map<CommonDTO>(opt)).ToList();
+            return this._dbEntities.outlets.Where(p => p.deleteflag == false).AsEnumerable().Select(opt => this._mapper.Map<CommonOutletDTO>(opt)).ToList();
         }
         public List<DTO.Core.CommonDTO.CommonDTO> GetRoles()
         {

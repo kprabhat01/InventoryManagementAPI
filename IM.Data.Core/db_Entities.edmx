@@ -84,6 +84,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NormalizeName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="deleteflag" Type="bit" />
+          <Property Name="IncrementPercentage" Type="decimal" Precision="16" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="OutletMapping">
           <Key>
@@ -428,6 +429,10 @@
         <Function Name="IMPORT_NEW_ITEM_TOSTORE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="OUTLETID" Type="int" Mode="In" />
         </Function>
+        <Function Name="UPDATEMATERIALRATEFORPO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="outletId" Type="int" Mode="In" />
+          <Parameter Name="prId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="db_InventoryModelStoreContainer">
           <EntitySet Name="item" EntityType="Self.item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="logs_User" EntityType="Self.logs_User" Schema="dbo" store:Type="Tables" />
@@ -555,6 +560,7 @@
           <NavigationProperty Name="prRequests" Relationship="db_InventoryModel.FK__prRequest__fromO__6FE99F9F" FromRole="outlet" ToRole="prRequest" />
           <NavigationProperty Name="prRequests1" Relationship="db_InventoryModel.FK__prRequest__toOut__70DDC3D8" FromRole="outlet" ToRole="prRequest" />
           <NavigationProperty Name="logsDailyStocks" Relationship="db_InventoryModel.FK__logsDaily__outle__19DFD96B" FromRole="outlet" ToRole="logsDailyStock" />
+          <Property Name="IncrementPercentage" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
         </EntityType>
         <EntityType Name="OutletMapping">
           <Key>
@@ -760,6 +766,10 @@
           </AssociationSet>
           <FunctionImport Name="CAPTUREDAILYLOGS" />
           <EntitySet Name="logsDailyJobs" EntityType="db_InventoryModel.logsDailyJob" />
+          <FunctionImport Name="UPDATEMATERIALRATEFORPO">
+            <Parameter Name="outletId" Mode="In" Type="Int32" />
+            <Parameter Name="prId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="item">
           <Key>
@@ -1113,6 +1123,7 @@
           <EntitySetMapping Name="outlets">
             <EntityTypeMapping TypeName="db_InventoryModel.outlet">
               <MappingFragment StoreEntitySet="outlet">
+                <ScalarProperty Name="IncrementPercentage" ColumnName="IncrementPercentage" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="NormalizeName" ColumnName="NormalizeName" />
                 <ScalarProperty Name="deleteflag" ColumnName="deleteflag" />
@@ -1292,6 +1303,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="UPDATEMATERIALRATEFORPO" FunctionName="db_InventoryModel.Store.UPDATEMATERIALRATEFORPO" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -28,6 +28,7 @@ namespace IM.Data.Core
         public int id { get; set; }
         public string NormalizeName { get; set; }
         public Nullable<bool> deleteflag { get; set; }
+        public decimal IncrementPercentage { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OutletMapping> OutletMappings { get; set; }

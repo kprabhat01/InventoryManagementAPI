@@ -5,7 +5,7 @@ namespace IL.Service.Core.CommonService
 {
     public interface ICommonService
     {
-        List<CommonDTO> GetOutlets();
+        List<CommonOutletDTO> GetOutlets();
         List<CommonDTO> GetRoles();
         List<CommonDTO> GetMovementType();
         List<CommonDTO> GetUnits();

@@ -4,6 +4,12 @@
     {
         public int Id { get; set; }
         public string NormalizeName { get; set; }
- 
+
+    }
+    public class CommonOutletDTO
+    {
+        public int Id { get; set; }
+        public string NormalizeName { get; set; }
+        public decimal IncrementPercentage { get; set; }
     }
 }

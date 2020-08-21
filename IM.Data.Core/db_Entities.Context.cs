@@ -79,5 +79,18 @@ namespace IM.Data.Core
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CAPTUREDAILYLOGS");
         }
+    
+        public virtual int UPDATEMATERIALRATEFORPO(Nullable<int> outletId, Nullable<int> prId)
+        {
+            var outletIdParameter = outletId.HasValue ?
+                new ObjectParameter("outletId", outletId) :
+                new ObjectParameter("outletId", typeof(int));
+    
+            var prIdParameter = prId.HasValue ?
+                new ObjectParameter("prId", prId) :
+                new ObjectParameter("prId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATEMATERIALRATEFORPO", outletIdParameter, prIdParameter);
+        }
     }
 }
