@@ -20,6 +20,7 @@ namespace IL.DTO.Core.ItemDTO
         public string Comment { get; set; }
         [Required]
         public int UnitId { get; set; }
+        public bool isVarience { get; set; } = false;
     }
 
     public class ItemStockDTO

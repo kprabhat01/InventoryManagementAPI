@@ -77,6 +77,9 @@
     <Compile Include="logsDailyStock.cs">
       <DependentUpon>db_Entities.tt</DependentUpon>
     </Compile>
+    <Compile Include="logsInventoryAlert.cs">
+      <DependentUpon>db_Entities.tt</DependentUpon>
+    </Compile>
     <Compile Include="logsOutletStock.cs">
       <DependentUpon>db_Entities.tt</DependentUpon>
     </Compile>

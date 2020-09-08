@@ -31,12 +31,12 @@ namespace Inventory.Controllers
         public IHttpActionResult SaveItems([FromBody]ItemDetailDTO obj)
         {
             if (_itemService.IsItemExists(obj.Name)) return BadRequest(CommonMessageHelper.RECORD_ALREADY_EXISTS_ALERT);
-            if (this._itemService.SaveItem(obj.Name, obj.CreatedBy, obj.Comment, obj.UnitId))
+            if (this._itemService.SaveItem(obj.Name, obj.CreatedBy, obj.Comment, obj.UnitId,obj.isVarience))
                 return Ok(CommonMessageHelper.SUCCESSFULL_INSERTED_ALERT);
             return InternalServerError();
         }
 
-        [Route("api/GetCurrentStock/{outletId}")]
+        [Route("api/getCurrentStock/{outletId}")]
         [HttpGet]
         public IHttpActionResult GetCurrentOutletStock(int OutletId)
         {

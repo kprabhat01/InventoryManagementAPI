@@ -61,5 +61,29 @@ namespace IL.Service.Core.CommonService
                 return false;
             }
         }
+
+        public List<Notification> GetNotifications(int userId)
+        {
+            return this._dbEntities.logsInventoryAlerts.Where(p => p.userId == userId && p.isSeen == false && p.isVisible == true)
+                .Select(opt => new Notification
+                {
+                    Id = opt.id,
+                    Message = opt.messageComment
+                })
+                .ToList();
+        }
+        public bool MarkViewToNotification(int userId)
+        {
+            using (var entity = new db_InventoryEntities())
+            {
+                var notifications = entity.logsInventoryAlerts.Where(p => p.userId == userId && p.isSeen == false && p.isVisible == true);
+                foreach (var item in notifications)
+                {
+                    item.isSeen = true;
+                }
+                entity.SaveChanges();
+                return true;
+            }
+        }
     }
 }

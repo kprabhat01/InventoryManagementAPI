@@ -21,6 +21,7 @@ namespace IM.Data.Core
             this.outletStocks = new HashSet<outletStock>();
             this.prItems = new HashSet<prItem>();
             this.logsDailyStocks = new HashSet<logsDailyStock>();
+            this.logsInventoryAlerts = new HashSet<logsInventoryAlert>();
         }
     
         public int id { get; set; }
@@ -30,6 +31,7 @@ namespace IM.Data.Core
         public Nullable<System.DateTime> createdDate { get; set; }
         public string createdBy { get; set; }
         public string comment { get; set; }
+        public Nullable<bool> isVarience { get; set; }
     
         public virtual unit unit { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -40,5 +42,7 @@ namespace IM.Data.Core
         public virtual ICollection<prItem> prItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<logsDailyStock> logsDailyStocks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<logsInventoryAlert> logsInventoryAlerts { get; set; }
     }
 }

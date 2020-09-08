@@ -36,6 +36,9 @@ namespace Inventory.Controllers
                 });
             }
             var result = this._prService.SavePR(request, lst);
+            if (obj.PoNotification != null)
+                this._prService.SaveNotificationForItemAvilability(obj.PoNotification);
+
             if (result) return Ok(CommonMessageHelper.SUCCESSFULL_INSERTED_ALERT);
             else return InternalServerError();
 
@@ -73,7 +76,7 @@ namespace Inventory.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             if (!this._prService.CheckPRStatus(obj.PrId, 3)) return BadRequest(CommonMessageHelper.RECORD_NOTFOUND_WITH_CORRECT_STATUS);
-            var data = this._prService.ImportPOItemToStore(obj.ToOutletId, obj.FromOutletId, obj.PrId, obj.Username);
+            var data = this._prService.ImportPOItemToStore(obj.ToOutletId, obj.FromOutletId, obj.PrId, obj.Username, obj.PrItem);
             if (data)
                 return Ok(CommonMessageHelper.SUCCESSFULL_UPDATED_ALERT);
             else
@@ -88,7 +91,7 @@ namespace Inventory.Controllers
         {
             var data = this._prService.GetPORequestBasedOnProcessStatus();
             if (data.Any()) return Ok(data);
-            else return NotFound(); 
+            else return NotFound();
         }
 
     }

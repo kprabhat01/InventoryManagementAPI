@@ -12,4 +12,10 @@
         public string NormalizeName { get; set; }
         public decimal IncrementPercentage { get; set; }
     }
+
+    public class Notification
+    {
+        public int Id { get; set; }
+        public string Message { get; set; }
+    }
 }

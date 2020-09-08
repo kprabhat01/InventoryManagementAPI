@@ -16,6 +16,7 @@
           <Property Name="createdDate" Type="datetime" />
           <Property Name="createdBy" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="comment" Type="text" />
+          <Property Name="isVarience" Type="bit" />
         </EntityType>
         <EntityType Name="logs_User">
           <Key>
@@ -44,6 +45,19 @@
           <Property Name="currentStock" Type="decimal" Precision="16" Scale="2" Nullable="false" />
           <Property Name="lastRate" Type="decimal" Precision="16" Scale="2" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="logsInventoryAlert">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="itemId" Type="int" Nullable="false" />
+          <Property Name="outletId" Type="int" Nullable="false" />
+          <Property Name="isVisible" Type="bit" Nullable="false" />
+          <Property Name="isSeen" Type="bit" Nullable="false" />
+          <Property Name="messageComment" Type="varchar" MaxLength="255" />
+          <Property Name="createdDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="logsOutletStock">
           <Key>
@@ -224,6 +238,42 @@
             </Principal>
             <Dependent Role="logsDailyStock">
               <PropertyRef Name="outletId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__logsInven__itemI__2CF2ADDF">
+          <End Role="item" Type="Self.item" Multiplicity="1" />
+          <End Role="logsInventoryAlert" Type="Self.logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="item">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="itemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__logsInven__outle__2DE6D218">
+          <End Role="outlet" Type="Self.outlet" Multiplicity="1" />
+          <End Role="logsInventoryAlert" Type="Self.logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="outlet">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="outletId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__logsInven__userI__2BFE89A6">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="logsInventoryAlert" Type="Self.logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="userId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -420,11 +470,21 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="CAPTUREDAILYLOGS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="EXPORT_ITEM_PO_REQUEST" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TOOUTLETID" Type="int" Mode="In" />
+          <Parameter Name="PRID" Type="int" Mode="In" />
+          <Parameter Name="USERNAME" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="GETDIFFERENCEQUANITY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="ITEMID" Type="int" Mode="In" />
+          <Parameter Name="OUTLETID" Type="int" Mode="In" />
+        </Function>
         <Function Name="IMPORT_ITEM_FROM_PR" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="FROMOUTLETID" Type="int" Mode="In" />
           <Parameter Name="TOOUTLETID" Type="int" Mode="In" />
           <Parameter Name="PRID" Type="int" Mode="In" />
           <Parameter Name="USERNAME" Type="varchar" Mode="In" />
+          <Parameter Name="prItem" Type="varchar" Mode="In" />
         </Function>
         <Function Name="IMPORT_NEW_ITEM_TOSTORE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="OUTLETID" Type="int" Mode="In" />
@@ -438,6 +498,7 @@
           <EntitySet Name="logs_User" EntityType="Self.logs_User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="logsDailyJob" EntityType="Self.logsDailyJob" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="logsDailyStock" EntityType="Self.logsDailyStock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="logsInventoryAlert" EntityType="Self.logsInventoryAlert" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="logsOutletStock" EntityType="Self.logsOutletStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="logsPRStatus" EntityType="Self.logsPRStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="movementType" EntityType="Self.movementType" Schema="dbo" store:Type="Tables" />
@@ -466,6 +527,18 @@
           <AssociationSet Name="FK__logsDaily__outle__19DFD96B" Association="Self.FK__logsDaily__outle__19DFD96B">
             <End Role="outlet" EntitySet="outlet" />
             <End Role="logsDailyStock" EntitySet="logsDailyStock" />
+          </AssociationSet>
+          <AssociationSet Name="FK__logsInven__itemI__2CF2ADDF" Association="Self.FK__logsInven__itemI__2CF2ADDF">
+            <End Role="item" EntitySet="item" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlert" />
+          </AssociationSet>
+          <AssociationSet Name="FK__logsInven__outle__2DE6D218" Association="Self.FK__logsInven__outle__2DE6D218">
+            <End Role="outlet" EntitySet="outlet" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlert" />
+          </AssociationSet>
+          <AssociationSet Name="FK__logsInven__userI__2BFE89A6" Association="Self.FK__logsInven__userI__2BFE89A6">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlert" />
           </AssociationSet>
           <AssociationSet Name="FK__logsOutle__itemI__06CD04F7" Association="Self.FK__logsOutle__itemI__06CD04F7">
             <End Role="item" EntitySet="item" />
@@ -561,6 +634,7 @@
           <NavigationProperty Name="prRequests1" Relationship="db_InventoryModel.FK__prRequest__toOut__70DDC3D8" FromRole="outlet" ToRole="prRequest" />
           <NavigationProperty Name="logsDailyStocks" Relationship="db_InventoryModel.FK__logsDaily__outle__19DFD96B" FromRole="outlet" ToRole="logsDailyStock" />
           <Property Name="IncrementPercentage" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <NavigationProperty Name="logsInventoryAlerts" Relationship="db_InventoryModel.FK__logsInven__outle__2DE6D218" FromRole="outlet" ToRole="logsInventoryAlert" />
         </EntityType>
         <EntityType Name="OutletMapping">
           <Key>
@@ -609,6 +683,7 @@
           <NavigationProperty Name="logs_User" Relationship="Self.FK__logs_User__userI__2F10007B" FromRole="Users" ToRole="logs_User" />
           <NavigationProperty Name="OutletMappings" Relationship="Self.FK__OutletMap__userI__3D5E1FD2" FromRole="Users" ToRole="OutletMapping" />
           <NavigationProperty Name="UserRole" Relationship="Self.FK__Users__roleId__2A4B4B5E" FromRole="Users" ToRole="UserRole" />
+          <NavigationProperty Name="logsInventoryAlerts" Relationship="db_InventoryModel.FK__logsInven__userI__2BFE89A6" FromRole="User" ToRole="logsInventoryAlert" />
         </EntityType>
         <Association Name="FK__logs_User__userI__2F10007B">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
@@ -751,6 +826,7 @@
             <Parameter Name="TOOUTLETID" Mode="In" Type="Int32" />
             <Parameter Name="PRID" Mode="In" Type="Int32" />
             <Parameter Name="USERNAME" Mode="In" Type="String" />
+            <Parameter Name="prItem" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="IMPORT_NEW_ITEM_TOSTORE" ReturnType="Collection(Int32)">
           <Parameter Name="OUTLETID" Mode="In" Type="Int32" />
@@ -770,6 +846,24 @@
             <Parameter Name="outletId" Mode="In" Type="Int32" />
             <Parameter Name="prId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="logsInventoryAlerts" EntityType="db_InventoryModel.logsInventoryAlert" />
+          <AssociationSet Name="FK__logsInven__itemI__2CF2ADDF" Association="db_InventoryModel.FK__logsInven__itemI__2CF2ADDF">
+            <End Role="item" EntitySet="items" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlerts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__logsInven__outle__2DE6D218" Association="db_InventoryModel.FK__logsInven__outle__2DE6D218">
+            <End Role="outlet" EntitySet="outlets" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlerts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__logsInven__userI__2BFE89A6" Association="db_InventoryModel.FK__logsInven__userI__2BFE89A6">
+            <End Role="User" EntitySet="Users" />
+            <End Role="logsInventoryAlert" EntitySet="logsInventoryAlerts" />
+          </AssociationSet>
+          <FunctionImport Name="EXPORT_ITEM_PO_REQUEST" ReturnType="Collection(Int32)">
+            <Parameter Name="TOOUTLETID" Mode="In" Type="Int32" />
+            <Parameter Name="PRID" Mode="In" Type="Int32" />
+            <Parameter Name="USERNAME" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="item">
           <Key>
@@ -787,6 +881,8 @@
           <NavigationProperty Name="outletStocks" Relationship="db_InventoryModel.FK__outletSto__itemI__619B8048" FromRole="item" ToRole="outletStock" />
           <NavigationProperty Name="prItems" Relationship="db_InventoryModel.FK__prItems__itemid__7C4F7684" FromRole="item" ToRole="prItem" />
           <NavigationProperty Name="logsDailyStocks" Relationship="db_InventoryModel.FK__logsDaily__itemI__1AD3FDA4" FromRole="item" ToRole="logsDailyStock" />
+          <Property Name="isVarience" Type="Boolean" />
+          <NavigationProperty Name="logsInventoryAlerts" Relationship="db_InventoryModel.FK__logsInven__itemI__2CF2ADDF" FromRole="item" ToRole="logsInventoryAlert" />
         </EntityType>
         <EntityType Name="unit">
           <Key>
@@ -1103,6 +1199,58 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="LastRunDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="logsInventoryAlert">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="Int32" Nullable="false" />
+          <Property Name="itemId" Type="Int32" Nullable="false" />
+          <Property Name="outletId" Type="Int32" Nullable="false" />
+          <Property Name="isVisible" Type="Boolean" Nullable="false" />
+          <Property Name="isSeen" Type="Boolean" Nullable="false" />
+          <Property Name="messageComment" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="item" Relationship="db_InventoryModel.FK__logsInven__itemI__2CF2ADDF" FromRole="logsInventoryAlert" ToRole="item" />
+          <NavigationProperty Name="outlet" Relationship="db_InventoryModel.FK__logsInven__outle__2DE6D218" FromRole="logsInventoryAlert" ToRole="outlet" />
+          <NavigationProperty Name="User" Relationship="db_InventoryModel.FK__logsInven__userI__2BFE89A6" FromRole="logsInventoryAlert" ToRole="User" />
+          <Property Name="createdDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <Association Name="FK__logsInven__itemI__2CF2ADDF">
+          <End Type="db_InventoryModel.item" Role="item" Multiplicity="1" />
+          <End Type="db_InventoryModel.logsInventoryAlert" Role="logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="item">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="itemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__logsInven__outle__2DE6D218">
+          <End Type="db_InventoryModel.outlet" Role="outlet" Multiplicity="1" />
+          <End Type="db_InventoryModel.logsInventoryAlert" Role="logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="outlet">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="outletId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__logsInven__userI__2BFE89A6">
+          <End Type="db_InventoryModel.User" Role="User" Multiplicity="1" />
+          <End Type="db_InventoryModel.logsInventoryAlert" Role="logsInventoryAlert" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="logsInventoryAlert">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1177,6 +1325,7 @@
           <EntitySetMapping Name="items">
             <EntityTypeMapping TypeName="db_InventoryModel.item">
               <MappingFragment StoreEntitySet="item">
+                <ScalarProperty Name="isVarience" ColumnName="isVarience" />
                 <ScalarProperty Name="comment" ColumnName="comment" />
                 <ScalarProperty Name="createdBy" ColumnName="createdBy" />
                 <ScalarProperty Name="createdDate" ColumnName="createdDate" />
@@ -1304,6 +1453,21 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="UPDATEMATERIALRATEFORPO" FunctionName="db_InventoryModel.Store.UPDATEMATERIALRATEFORPO" />
+          <EntitySetMapping Name="logsInventoryAlerts">
+            <EntityTypeMapping TypeName="db_InventoryModel.logsInventoryAlert">
+              <MappingFragment StoreEntitySet="logsInventoryAlert">
+                <ScalarProperty Name="createdDate" ColumnName="createdDate" />
+                <ScalarProperty Name="messageComment" ColumnName="messageComment" />
+                <ScalarProperty Name="isSeen" ColumnName="isSeen" />
+                <ScalarProperty Name="isVisible" ColumnName="isVisible" />
+                <ScalarProperty Name="outletId" ColumnName="outletId" />
+                <ScalarProperty Name="itemId" ColumnName="itemId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="EXPORT_ITEM_PO_REQUEST" FunctionName="db_InventoryModel.Store.EXPORT_ITEM_PO_REQUEST" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

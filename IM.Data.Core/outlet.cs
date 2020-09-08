@@ -23,6 +23,7 @@ namespace IM.Data.Core
             this.prRequests = new HashSet<prRequest>();
             this.prRequests1 = new HashSet<prRequest>();
             this.logsDailyStocks = new HashSet<logsDailyStock>();
+            this.logsInventoryAlerts = new HashSet<logsInventoryAlert>();
         }
     
         public int id { get; set; }
@@ -42,5 +43,7 @@ namespace IM.Data.Core
         public virtual ICollection<prRequest> prRequests1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<logsDailyStock> logsDailyStocks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<logsInventoryAlert> logsInventoryAlerts { get; set; }
     }
 }

@@ -5,7 +5,9 @@ using IM.Data.Core;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Data;
 
 namespace IL.Service.Core.PRService
 {
@@ -39,7 +41,8 @@ namespace IL.Service.Core.PRService
                         InsertPrStatus(prObj.id, prObj.statusId, prObj.createdBy, entites);
                         // SavePRItemLogs(prObj.id, null, itemObj, prObj.createdBy);
                         transaction.Commit();
-                        entites.UPDATEMATERIALRATEFORPO(prObj.toOutletId, prObj.id);
+                        // entites.UPDATEMATERIALRATEFORPO(prObj.toOutletId, prObj.id);
+                        entites.EXPORT_ITEM_PO_REQUEST(prObj.toOutletId, prObj.id, prObj.createdBy);
                         return true;
                     }
                     catch (Exception ex)
@@ -143,8 +146,9 @@ namespace IL.Service.Core.PRService
                              Id = it.id,
                              Item = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.id, NormalizeName = it.item.normalizeName },
                              Quantity = it.quantity,
-                             Rate = it.rate ?? 0,
-                             Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName }
+                             Rate = it.rate.GetValueOrDefault(),
+                             Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName },
+
                          }).ToList()
 
                      }).ToList();
@@ -187,13 +191,13 @@ namespace IL.Service.Core.PRService
                 }
             }
         }
-        public bool ImportPOItemToStore(int toOutletId, int fromOutletId, int prId, string username)
+        public bool ImportPOItemToStore(int toOutletId, int fromOutletId, int prId, string username, List<int> poItem)
         {
 
             if (this._commonService.ImportNewItemsFromCreation(toOutletId) && this._commonService.ImportNewItemsFromCreation(fromOutletId))
             {
                 using (var entities = new db_InventoryEntities())
-                    entities.IMPORT_ITEM_FROM_PR(fromOutletId, toOutletId, prId, username);
+                    entities.IMPORT_ITEM_FROM_PR(fromOutletId, toOutletId, prId, username, string.Join(",", poItem));
                 return true;
             }
             return false;
@@ -223,12 +227,66 @@ namespace IL.Service.Core.PRService
                              Id = it.id,
                              Item = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.id, NormalizeName = it.item.normalizeName },
                              Quantity = it.quantity,
-                             Rate = it.rate ?? 0,
-                             Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName }
+                             Rate = it.rate ?? -1,
+                             Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName },
+                             isFlagOfDifference = false,
+                             lastRate = 0
                          }).ToList()
 
                      }).ToList();
+
+                foreach (var po in poRequest)
+                {
+                    foreach (var item in po.ItemDetail)
+                    {
+
+                        if (item.Rate == -1)
+                        {
+                            var lastRateOfItemInStore = entities.outletStocks.Single(p => p.outletId == po.ToStore.Id && p.itemId == item.Item.Id).lastrate;
+                            var incrementPercentageOfStore = entities.outlets.Single(p => p.id == po.ToStore.Id).IncrementPercentage;
+                            if (entities.items.Single(p => p.id == item.Item.Id).isVarience.GetValueOrDefault() == true)
+                                item.Rate = lastRateOfItemInStore + (lastRateOfItemInStore * incrementPercentageOfStore / 100);
+                            else
+                                item.Rate = lastRateOfItemInStore;
+
+                        }
+                        item.isFlagOfDifference = isDifference(po.ToStore.Id, item.Item.Id);
+                    }
+                }
                 return poRequest;
+            }
+        }
+        private bool isDifference(int outletId, int itemId)
+        {
+            using (var entity = new db_InventoryEntities())
+            {
+                var data = entity.Database.SqlQuery<bool>("SELECT DBO.GETDIFFERENCEQUANITY (@ITEMID,@OUTLETID)",
+                    new SqlParameter("@ITEMID", SqlDbType.Int) { Value = itemId },
+                    new SqlParameter("@OUTLETID", SqlDbType.Int) { Value = outletId }
+                    );
+                return data.SingleOrDefault(p => p);
+            }
+
+        }
+
+        public bool SaveNotificationForItemAvilability(List<PONotification> obj)
+        {
+            using (var entity = new db_InventoryEntities())
+            {
+                List<logsInventoryAlert> lst = new List<logsInventoryAlert>();
+                foreach (var item in obj)
+                {
+                    lst.Add(new logsInventoryAlert
+                    {
+                        itemId = item.ItemId,
+                        userId = item.UserId,
+                        outletId = item.OutletId,
+                        createdDate = DateTime.Now
+                    });
+                }
+                entity.logsInventoryAlerts.AddRange(lst);
+                entity.SaveChanges();
+                return true;
             }
         }
     }

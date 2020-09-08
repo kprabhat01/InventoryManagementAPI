@@ -74,5 +74,28 @@ namespace Inventory.Controllers
             else return NotFound();
         }
 
+        [HttpGet]
+        [Route("api/getNotificationBasedOnUserId/{userId}")]
+        public IHttpActionResult GetNotification(int userId)
+        {
+            var notification = this._commonService.GetNotifications(userId);
+            if (notification.Any())
+                return Ok(notification);
+            else
+                return NotFound();
+        }
+
+        [HttpPost]
+        [Route("api/updateNotification/{userId}")]
+        public IHttpActionResult UpdateNotification([FromUri]int userId)
+        {
+            if (this._commonService.MarkViewToNotification(userId))
+                return Ok();
+            else
+                return InternalServerError();
+        }
+
+
+
     }
 }

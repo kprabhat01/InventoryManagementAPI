@@ -19,6 +19,7 @@ namespace IM.Data.Core
         {
             this.logs_User = new HashSet<logs_User>();
             this.OutletMappings = new HashSet<OutletMapping>();
+            this.logsInventoryAlerts = new HashSet<logsInventoryAlert>();
         }
     
         public int id { get; set; }
@@ -38,5 +39,7 @@ namespace IM.Data.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OutletMapping> OutletMappings { get; set; }
         public virtual UserRole UserRole { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<logsInventoryAlert> logsInventoryAlerts { get; set; }
     }
 }

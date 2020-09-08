@@ -12,5 +12,8 @@ namespace IL.Service.Core.CommonService
         List<CommonDTO> GetStatus();
         List<CommonDTO> UserSpecificOutlet(int userId);
         bool ImportNewItemsFromCreation(int outletId);
+        List<Notification> GetNotifications(int userId);
+        bool MarkViewToNotification(int userId);
+         
     }
 }

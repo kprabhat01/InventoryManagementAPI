@@ -20,6 +20,7 @@ namespace IL.DTO.Core.PODTO
         public int StatusId { get; set; } = 2;
         [Required]
         public List<ItemQty> POItems { get; set; }
+        public List<PONotification> PoNotification { get; set; }
     }
 
     public class POReturnDTO
@@ -39,6 +40,9 @@ namespace IL.DTO.Core.PODTO
         public decimal Quantity { get; set; }
         public decimal Rate { get; set; }
         public CommonDTO.CommonDTO Unit { get; set; }
+        public bool? isFlagOfDifference { get; set; } = false;
+        public decimal lastRate { get; set; }
+
     }
     public class ItemQty
     {
@@ -74,5 +78,13 @@ namespace IL.DTO.Core.PODTO
         public int PrId { get; set; }
         [Required]
         public string Username { get; set; }
+        [Required]
+        public List<int> PrItem { get; set; }
+    }
+    public class PONotification
+    {
+        public int UserId { get; set; }
+        public int ItemId { get; set; }
+        public int OutletId { get; set; }
     }
 }

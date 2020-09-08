@@ -42,6 +42,10 @@
         <AssociationConnector Association="db_InventoryModel.FK__logsDaily__itemI__1AD3FDA4" />
         <AssociationConnector Association="db_InventoryModel.FK__logsDaily__outle__19DFD96B" />
         <EntityTypeShape EntityType="db_InventoryModel.logsDailyJob" Width="1.5" PointX="8.375" PointY="5.75" />
+        <EntityTypeShape EntityType="db_InventoryModel.logsInventoryAlert" Width="1.5" PointX="15.875" PointY="10.25" />
+        <AssociationConnector Association="db_InventoryModel.FK__logsInven__itemI__2CF2ADDF" />
+        <AssociationConnector Association="db_InventoryModel.FK__logsInven__outle__2DE6D218" />
+        <AssociationConnector Association="db_InventoryModel.FK__logsInven__userI__2BFE89A6" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

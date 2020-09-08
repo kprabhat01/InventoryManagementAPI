@@ -44,8 +44,9 @@ namespace IM.Data.Core
         public virtual DbSet<prRequest> prRequests { get; set; }
         public virtual DbSet<logsDailyStock> logsDailyStocks { get; set; }
         public virtual DbSet<logsDailyJob> logsDailyJobs { get; set; }
+        public virtual DbSet<logsInventoryAlert> logsInventoryAlerts { get; set; }
     
-        public virtual ObjectResult<Nullable<int>> IMPORT_ITEM_FROM_PR(Nullable<int> fROMOUTLETID, Nullable<int> tOOUTLETID, Nullable<int> pRID, string uSERNAME)
+        public virtual ObjectResult<Nullable<int>> IMPORT_ITEM_FROM_PR(Nullable<int> fROMOUTLETID, Nullable<int> tOOUTLETID, Nullable<int> pRID, string uSERNAME, string prItem)
         {
             var fROMOUTLETIDParameter = fROMOUTLETID.HasValue ?
                 new ObjectParameter("FROMOUTLETID", fROMOUTLETID) :
@@ -63,7 +64,11 @@ namespace IM.Data.Core
                 new ObjectParameter("USERNAME", uSERNAME) :
                 new ObjectParameter("USERNAME", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("IMPORT_ITEM_FROM_PR", fROMOUTLETIDParameter, tOOUTLETIDParameter, pRIDParameter, uSERNAMEParameter);
+            var prItemParameter = prItem != null ?
+                new ObjectParameter("prItem", prItem) :
+                new ObjectParameter("prItem", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("IMPORT_ITEM_FROM_PR", fROMOUTLETIDParameter, tOOUTLETIDParameter, pRIDParameter, uSERNAMEParameter, prItemParameter);
         }
     
         public virtual ObjectResult<Nullable<int>> IMPORT_NEW_ITEM_TOSTORE(Nullable<int> oUTLETID)
@@ -91,6 +96,23 @@ namespace IM.Data.Core
                 new ObjectParameter("prId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UPDATEMATERIALRATEFORPO", outletIdParameter, prIdParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> EXPORT_ITEM_PO_REQUEST(Nullable<int> tOOUTLETID, Nullable<int> pRID, string uSERNAME)
+        {
+            var tOOUTLETIDParameter = tOOUTLETID.HasValue ?
+                new ObjectParameter("TOOUTLETID", tOOUTLETID) :
+                new ObjectParameter("TOOUTLETID", typeof(int));
+    
+            var pRIDParameter = pRID.HasValue ?
+                new ObjectParameter("PRID", pRID) :
+                new ObjectParameter("PRID", typeof(int));
+    
+            var uSERNAMEParameter = uSERNAME != null ?
+                new ObjectParameter("USERNAME", uSERNAME) :
+                new ObjectParameter("USERNAME", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("EXPORT_ITEM_PO_REQUEST", tOOUTLETIDParameter, pRIDParameter, uSERNAMEParameter);
         }
     }
 }

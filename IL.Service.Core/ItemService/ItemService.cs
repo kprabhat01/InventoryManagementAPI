@@ -19,25 +19,32 @@ namespace IL.Service.Core.ItemService
         }
         public bool deleteItem(int itemId)
         {
-            var item = this._dbEntities.items.SingleOrDefault(p => p.id == itemId);
-            item.deleteflag = true;
-            this._dbEntities.SaveChanges();
-            return true;
+            using (var entites = new db_InventoryEntities())
+            {
+                var item = entites.items.SingleOrDefault(p => p.id == itemId);
+                item.deleteflag = true;
+                entites.SaveChanges();
+                return true;
+            }
         }
 
-        public bool SaveItem(string itemName, string username, string comment, int unit)
+        public bool SaveItem(string itemName, string username, string comment, int unit, bool hasVarience)
         {
-            this._dbEntities.items.Add(new item
+            using (var entites = new db_InventoryEntities())
             {
-                normalizeName = itemName,
-                createdBy = username,
-                comment = comment,
-                deleteflag = false,
-                unitId = unit,
-                createdDate = DateTime.Now
-            });
-            this._dbEntities.SaveChanges();
-            return true;
+                entites.items.Add(new item
+                {
+                    normalizeName = itemName,
+                    createdBy = username,
+                    comment = comment,
+                    deleteflag = false,
+                    unitId = unit,
+                    createdDate = DateTime.Now,
+                    isVarience = hasVarience
+                });
+                entites.SaveChanges();
+                return true;
+            }
         }
         public List<ItemDTO> GetItems()
         {

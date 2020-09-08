@@ -3,6 +3,7 @@ using IL.Service.Core.LoggerService;
 using IM.Data.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IL.Service.Core.InwardService
 {
@@ -21,6 +22,7 @@ namespace IL.Service.Core.InwardService
                 {
                     try
                     {
+                        var logsInventoryAlert = entity.logsInventoryAlerts.Where(p => p.isSeen == false && p.isVisible == false).ToList();
 
                         List<logsOutletStock> lst = new List<logsOutletStock>();
                         var items = entity.outletStocks;
@@ -44,11 +46,16 @@ namespace IL.Service.Core.InwardService
                                         username = outItem.UserName,
                                         createdDate = outItem.CreatedDate
                                     });
+                                    foreach (var logItem in logsInventoryAlert.Where(p => p.outletId == outItem.OutletId && p.itemId == outItem.ItemId && p.isVisible == false && p.isSeen == false))
+                                    {
+                                        logItem.isVisible = true;
+                                        logItem.messageComment = $"{item.item.normalizeName} is available now !! ({DateTime.Now.ToString("dd-MMM-yyyy")})";
+                                    }
                                 }
                             }
 
                         }
-                        entity.SaveChanges();
+                        // entity.SaveChanges();
                         entity.logsOutletStocks.AddRange(lst);
                         entity.SaveChanges();
                         trans.Commit();
