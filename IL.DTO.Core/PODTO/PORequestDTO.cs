@@ -32,7 +32,10 @@ namespace IL.DTO.Core.PODTO
         public string Username { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<POItemReturnDTO> ItemDetail { get; set; }
+        public decimal? TotalAmount { get; set; }
     }
+
+
     public class POItemReturnDTO
     {
         public int Id { get; set; }
@@ -40,8 +43,9 @@ namespace IL.DTO.Core.PODTO
         public decimal Quantity { get; set; }
         public decimal Rate { get; set; }
         public CommonDTO.CommonDTO Unit { get; set; }
-        public bool? isFlagOfDifference { get; set; } = false;
-        public decimal lastRate { get; set; }
+        public bool? IsFlagOfDifference { get; set; } = false;
+        public decimal LastRate { get; set; }
+        public decimal? TotalAmount { get; set; }
 
     }
     public class ItemQty

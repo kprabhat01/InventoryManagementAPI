@@ -7,6 +7,7 @@ using IL.Service.Core.JobService;
 using IL.Service.Core.LoggerService;
 using IL.Service.Core.OutwardService;
 using IL.Service.Core.PRService;
+using IL.Service.Core.ReportService;
 using IL.Service.Core.UserManagerService;
 using Inventory.App_Code;
 using System.Web.Http;
@@ -34,10 +35,11 @@ namespace Inventory
             container.RegisterType<IPRService, PRService>(new PerResolveLifetimeManager());
             container.RegisterType<ILoggerService, LoggerService>(new PerResolveLifetimeManager());
             container.RegisterType<IOutwardService, OutwardService>(new PerResolveLifetimeManager());
-            container.RegisterType<IMaterialInwards, MaterialInwards>(new PerResolveLifetimeManager()); 
+            container.RegisterType<IMaterialInwards, MaterialInwards>(new PerResolveLifetimeManager());
             container.RegisterType<IJobService, JobService>();
+            container.RegisterType<IReportService, ReportService>();
             var job = container.Resolve<IJobService>();
-            
+
             job.RunService();
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }

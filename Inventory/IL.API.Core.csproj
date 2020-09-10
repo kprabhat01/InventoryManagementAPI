@@ -283,6 +283,7 @@
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\OutwardController.cs" />
     <Compile Include="Controllers\PORequestController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UserMangerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

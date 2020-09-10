@@ -114,5 +114,23 @@ namespace IM.Data.Core
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("EXPORT_ITEM_PO_REQUEST", tOOUTLETIDParameter, pRIDParameter, uSERNAMEParameter);
         }
+    
+        [DbFunction("db_InventoryEntities", "GET_ITEMWISE_SNAPSHOT")]
+        public virtual IQueryable<GET_ITEMWISE_SNAPSHOT_Result> GET_ITEMWISE_SNAPSHOT(Nullable<System.DateTime> fROMDATE, Nullable<System.DateTime> tODATE, Nullable<int> oUTLETID)
+        {
+            var fROMDATEParameter = fROMDATE.HasValue ?
+                new ObjectParameter("FROMDATE", fROMDATE) :
+                new ObjectParameter("FROMDATE", typeof(System.DateTime));
+    
+            var tODATEParameter = tODATE.HasValue ?
+                new ObjectParameter("TODATE", tODATE) :
+                new ObjectParameter("TODATE", typeof(System.DateTime));
+    
+            var oUTLETIDParameter = oUTLETID.HasValue ?
+                new ObjectParameter("OUTLETID", oUTLETID) :
+                new ObjectParameter("OUTLETID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GET_ITEMWISE_SNAPSHOT_Result>("[db_InventoryEntities].[GET_ITEMWISE_SNAPSHOT](@FROMDATE, @TODATE, @OUTLETID)", fROMDATEParameter, tODATEParameter, oUTLETIDParameter);
+        }
     }
 }

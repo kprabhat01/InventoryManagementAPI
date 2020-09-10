@@ -68,6 +68,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>db_Entities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="GET_ITEMWISE_SNAPSHOT_Result.cs">
+      <DependentUpon>db_Entities.tt</DependentUpon>
+    </Compile>
     <Compile Include="item.cs">
       <DependentUpon>db_Entities.tt</DependentUpon>
     </Compile>

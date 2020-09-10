@@ -475,6 +475,22 @@
           <Parameter Name="PRID" Type="int" Mode="In" />
           <Parameter Name="USERNAME" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="GET_ITEMWISE_SNAPSHOT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FROMDATE" Type="date" Mode="In" />
+          <Parameter Name="TODATE" Type="date" Mode="In" />
+          <Parameter Name="OUTLETID" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="item" Type="varchar" MaxLength="100" Nullable="false" />
+                <Property Name="unit" Type="varchar" MaxLength="100" Nullable="false" />
+                <Property Name="quantity" Type="decimal" Precision="38" Scale="2" />
+                <Property Name="rate" Type="decimal" Precision="38" Scale="4" />
+                <Property Name="normalizeName" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="GETDIFFERENCEQUANITY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
           <Parameter Name="ITEMID" Type="int" Mode="In" />
           <Parameter Name="OUTLETID" Type="int" Mode="In" />
@@ -864,6 +880,11 @@
             <Parameter Name="PRID" Mode="In" Type="Int32" />
             <Parameter Name="USERNAME" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="GET_ITEMWISE_SNAPSHOT" IsComposable="true" ReturnType="Collection(db_InventoryModel.GET_ITEMWISE_SNAPSHOT_Result)">
+            <Parameter Name="FROMDATE" Mode="In" Type="DateTime" />
+            <Parameter Name="TODATE" Mode="In" Type="DateTime" />
+            <Parameter Name="OUTLETID" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="item">
           <Key>
@@ -1251,6 +1272,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="GET_ITEMWISE_SNAPSHOT_Result">
+          <Property Type="String" Name="item" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="unit" Nullable="false" MaxLength="100" />
+          <Property Type="Decimal" Name="quantity" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="rate" Nullable="true" Precision="38" Scale="4" />
+          <Property Type="String" Name="normalizeName" Nullable="true" MaxLength="50" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1468,6 +1496,17 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="EXPORT_ITEM_PO_REQUEST" FunctionName="db_InventoryModel.Store.EXPORT_ITEM_PO_REQUEST" />
+          <FunctionImportMapping FunctionImportName="GET_ITEMWISE_SNAPSHOT" FunctionName="db_InventoryModel.Store.GET_ITEMWISE_SNAPSHOT">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_InventoryModel.GET_ITEMWISE_SNAPSHOT_Result">
+                <ScalarProperty Name="item" ColumnName="item" />
+                <ScalarProperty Name="unit" ColumnName="unit" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="rate" ColumnName="rate" />
+                <ScalarProperty Name="normalizeName" ColumnName="normalizeName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

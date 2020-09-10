@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Data;
+using IL.DTO.Core.ReportDTO;
 
 namespace IL.Service.Core.PRService
 {
@@ -146,7 +147,7 @@ namespace IL.Service.Core.PRService
                              Id = it.id,
                              Item = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.id, NormalizeName = it.item.normalizeName },
                              Quantity = it.quantity,
-                             Rate = it.rate.GetValueOrDefault(),
+                             Rate = it.rate ?? 0,
                              Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName },
 
                          }).ToList()
@@ -229,8 +230,8 @@ namespace IL.Service.Core.PRService
                              Quantity = it.quantity,
                              Rate = it.rate ?? -1,
                              Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName },
-                             isFlagOfDifference = false,
-                             lastRate = 0
+                             IsFlagOfDifference = false,
+                             LastRate = 0
                          }).ToList()
 
                      }).ToList();
@@ -250,7 +251,7 @@ namespace IL.Service.Core.PRService
                                 item.Rate = lastRateOfItemInStore;
 
                         }
-                        item.isFlagOfDifference = isDifference(po.ToStore.Id, item.Item.Id);
+                        item.IsFlagOfDifference = isDifference(po.ToStore.Id, item.Item.Id);
                     }
                 }
                 return poRequest;
@@ -287,6 +288,36 @@ namespace IL.Service.Core.PRService
                 entity.logsInventoryAlerts.AddRange(lst);
                 entity.SaveChanges();
                 return true;
+            }
+        }
+
+        public List<POReturnDTO> GetPODetailReport(DateTime fromDate, DateTime toDate, int outletId)
+        {
+            using (var entities = new db_InventoryEntities())
+            {
+                var poRequest = entities.prRequests.Where(p => p.fromOutletId == outletId && (p.createdDate >= fromDate && p.createdDate <= toDate)).AsEnumerable().OrderByDescending(p => p.id)
+                     .Select(opt => new POReturnDTO
+                     {
+                         Id = opt.id,
+                         FromStore = new DTO.Core.CommonDTO.CommonDTO { Id = opt.outlet.id, NormalizeName = opt.outlet.NormalizeName },
+                         ToStore = new DTO.Core.CommonDTO.CommonDTO { Id = opt.outlet1.id, NormalizeName = opt.outlet1.NormalizeName },
+                         Username = opt.createdBy,
+                         CreatedDate = opt.createdDate,
+                         Status = new DTO.Core.CommonDTO.CommonDTO { Id = opt.Status.id, NormalizeName = opt.Status.name },
+                         TotalAmount = entities.prItems.AsQueryable().Where(p => p.prId == opt.id).Select(p => p.rate * p.quantity).Sum(),
+                         ItemDetail = entities.prItems.AsQueryable().Where(p => p.prId == opt.id)
+                         .Select(it => new POItemReturnDTO
+                         {
+                             Id = it.id,
+                             Item = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.id, NormalizeName = it.item.normalizeName },
+                             Quantity = it.quantity,
+                             Rate = it.rate ?? 0,
+                             Unit = new DTO.Core.CommonDTO.CommonDTO { Id = it.item.unit.id, NormalizeName = it.item.unit.normalizeName },
+                             TotalAmount = (it.rate * it.quantity)
+                         }).ToList()
+
+                     }).ToList();
+                return poRequest;
             }
         }
     }

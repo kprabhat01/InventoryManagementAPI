@@ -49,6 +49,7 @@
     <Compile Include="ItemDTO\ItemDTO.cs" />
     <Compile Include="PODTO\PORequestDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportDTO\CommonReport.cs" />
     <Compile Include="Result\Result.cs" />
     <Compile Include="UserDTO\AuthenticationDTO.cs" />
     <Compile Include="UserDTO\UserDTO.cs" />
