@@ -20,3 +20,9 @@
 /Inventory/packages
 /Inventory/.vs
 /Inventory/logs
+/IL.DTO.Core/obj/Release
+/IL.Service.Core/obj/Release
+/IL.Util.Core/obj/Release
+/IM.Data.Core/obj/Release
+/Inventory/obj/Release/AspnetCompileMerge/Source/bin
+/Inventory/obj/Release

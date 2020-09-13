@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Web.Http;
+using System.Web.Http.Cors;
+
 namespace Inventory
 {
     public static class WebApiConfig
@@ -14,7 +16,7 @@ namespace Inventory
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
+           
             config.Formatters.Remove(config.Formatters.XmlFormatter);
 
             config.Formatters.JsonFormatter.SupportedMediaTypes
@@ -22,7 +24,7 @@ namespace Inventory
             config.Formatters.JsonFormatter.SupportedMediaTypes
             .Add(new MediaTypeHeaderValue("application/x-www-form-urlencoded"));
 
-            config.EnableCors();
+            
         }
     }
 }

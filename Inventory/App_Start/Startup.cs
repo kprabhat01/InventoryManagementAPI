@@ -30,4 +30,5 @@ namespace Inventory.App_Start
              
         }
     }
+
 }
